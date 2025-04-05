@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Story Homepage</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #3a0ca3, #7209b7, #4361ee);
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      text-align: center;
+      padding: 30px 20px 10px;
+    }
+
+    header h1 {
+      font-size: 36px;
+    }
+
+    .story-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 20px 40px;
+      flex: 1;
+    }
+
+    .card {
+      background-color: #1e1e2f;
+      border-radius: 16px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      overflow: hidden;
+      transition: transform 0.3s ease;
+      cursor: pointer;
+      text-decoration: none;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      height: 300px;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+    }
+
+    .card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-bottom: 3px solid #7209b7;
+    }
+
+    .card-title {
+      padding: 15px;
+      font-size: 18px;
+      text-align: center;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .buttons-container {
+      text-align: center;
+      margin: 30px 0;
+    }
+
+    .game-button, .car-button-link {
+      display: inline-flex;
+      align-items: center;
+      background-color: #7209b7;
+      color: white;
+      padding: 15px 20px;
+      border-radius: 16px;
+      text-decoration: none;
+      font-size: 18px;
+      margin: 10px;
+      transition: background 0.3s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      width: 320px;
+      justify-content: center;
+    }
+
+    .game-button:hover, .car-button-link:hover {
+      background-color: #560bad;
+    }
+
+    .game-button img, .car-button-link img {
+      width: 40px;
+      height: 40px;
+      margin-right: 10px;
+      border-radius: 50%;
+      background-color: white;
+      padding: 5px;
+    }
+
+    .car-button-link {
+      animation: bounce 1s infinite alternate;
+    }
+
+    @keyframes bounce {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-10px); }
+    }
+
+    footer {
+      background: #1e1e2f;
+      color: #ccc;
+      text-align: center;
+      padding: 15px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Welcome to Little Minds</h1>
+  </header>
+
+  <div class="story-grid">
+    <a href="story1.html" class="card">
+      <img src="story/story1.png" alt="The Fox and the Grapes" />
+      <div class="card-title">The Fox and the Grapes</div>
+    </a>
+    <a href="story2.html" class="card">
+      <img src="story/story2.png" alt="Elephant and Friends" />
+      <div class="card-title">Elephant and Friends</div>
+    </a>
+    <a href="story3.html" class="card">
+      <img src="story/story3.png" alt="The Boy Who Cried Wolf" />
+      <div class="card-title">The Boy Who Cried Wolf</div>
+    </a>
+    <a href="story4.html" class="card">
+      <img src="story/story4.png" alt="The Ant and the Grasshopper" />
+      <div class="card-title">The Ant and the Grasshopper</div>
+    </a>
+    <a href="story5.html" class="card">
+      <img src="story/story5.png" alt="The Goose that Laid the Golden Eggs" />
+      <div class="card-title">The Goose that Laid the Golden Eggs</div>
+    </a>
+    <a href="story6.html" class="card">
+      <img src="story/story6.png" alt="The Tortoise and the Hare" />
+      <div class="card-title">The Tortoise and the Hare</div>
+    </a>
+    <a href="story7.html" class="card">
+      <img src="story/story7.png" alt="The Fox and the Stork" />
+      <div class="card-title">The Fox and the Stork</div>
+    </a>
+    <a href="story8.html" class="card">
+      <img src="story/story8.png" alt="The Thirsty Crow" />
+      <div class="card-title">The Thirsty Crow</div>
+    </a>
+    <a href="story9.html" class="card">
+      <img src="story/story9.png" alt="The Bear and Two Friends" />
+      <div class="card-title">The Bear and Two Friends</div>
+    </a>
+    <a href="story10.html" class="card">
+      <img src="story/story10.png" alt="The Lion and the Mouse" />
+      <div class="card-title">The Lion and the Mouse</div>
+    </a>
+  </div>
+
+  <div class="buttons-container">
+    <a href="game.html" class="game-button">
+      <img src="https://cdn-icons-png.flaticon.com/512/924/924915.png" alt="Play Game">
+      <span>Play Rock Paper Scissors</span>
+    </a>
+    <a href="cargame.html" class="car-button-link">
+      <img src="images/car.png" alt="Start Car Game">
+      <span>Play Car Game</span>
+    </a>
+  </div>
+
+  <footer>
+    &copy; 2025 Little Minds | All Rights Reserved
+  </footer>
+
+</body>
+</html>

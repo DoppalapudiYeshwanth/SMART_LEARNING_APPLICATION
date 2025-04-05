@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>The Tortoise and the Hare</title>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #3a0ca3, #7209b7, #4361ee);
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    iframe {
+      border-radius: 20px;
+      margin: 20px 0;
+    }
+
+    .question-box {
+      display: none;
+      margin: 20px auto;
+      max-width: 700px;
+      background: #1e1e2f;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    }
+
+    .question {
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+
+    .options button {
+      background-color: #7209b7;
+      border: none;
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 10px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .options button:hover {
+      background-color: #560bad;
+    }
+
+    .result {
+      font-size: 18px;
+      margin-top: 10px;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    #talkingTom {
+      position: fixed;
+      bottom: 10px;
+      right: 20px;
+      width: 180px;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>The Tortoise and the Hare</h1>
+
+  <iframe id="ytplayer" width="100%" height="400" 
+    src="https://www.youtube.com/embed/WF8iaqRqI60?enablejsapi=1"
+    frameborder="0" allowfullscreen>
+  </iframe>
+
+  <div id="quiz1" class="question-box">
+    <div class="question">1. What was the race between the tortoise and the hare meant to prove?</div>
+    <div class="options">
+      <button onclick="checkAnswer(this, false)">A) Who was stronger</button>
+      <button onclick="checkAnswer(this, true)">B) Who was faster</button>
+      <button onclick="checkAnswer(this, false)">C) Who was smarter</button>
+      <button onclick="checkAnswer(this, false)">D) Who had better luck</button>
+    </div>
+    <div class="result" id="result1"></div>
+  </div>
+
+  <div id="quiz2" class="question-box">
+    <div class="question">2. Why did the hare lose the race?</div>
+    <div class="options">
+      <button onclick="checkAnswer(this, false)">A) He got injured</button>
+      <button onclick="checkAnswer(this, false)">B) He ran in the wrong direction</button>
+      <button onclick="checkAnswer(this, true)">C) He took a nap and underestimated the tortoise</button>
+      <button onclick="checkAnswer(this, false)">D) The tortoise cheated</button>
+    </div>
+    <div class="result" id="result2"></div>
+  </div>
+
+  <canvas id="confetti-canvas"></canvas>
+  <audio id="partySound" src="https://www.myinstants.com/media/sounds/tada-fanfare.mp3"></audio>
+
+  <!-- Animated Talking Tom -->
+  <img id="talkingTom" src="https://media.tenor.com/i62XLhW1XqoAAAAi/talking-tom-dance.gif" alt="Talking Tom" />
+
+  <script>
+    let player;
+
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('ytplayer', {
+        events: {
+          'onStateChange': onPlayerStateChange
+        }
+      });
+    }
+
+    function onPlayerStateChange(event) {
+      if (event.data === YT.PlayerState.ENDED) {
+        document.getElementById('quiz1').style.display = 'block';
+      }
+    }
+
+    let currentQuiz = 1;
+
+    function checkAnswer(button, correct) {
+      const resultId = "result" + currentQuiz;
+      const resultBox = document.getElementById(resultId);
+
+      if (correct) {
+        resultBox.innerHTML = "🎉 Correct! Great job!";
+        document.getElementById("partySound").play();
+        launchConfetti();
+        speakTom("Correct! You're doing great!");
+        setTimeout(() => {
+          currentQuiz++;
+          if (currentQuiz <= 2) {
+            document.getElementById("quiz" + currentQuiz).style.display = 'block';
+          }
+        }, 1500);
+      } else {
+        resultBox.innerHTML = "❌ Oops! Try again or rewatch the story!";
+        speakTom("Oops! Try again.");
+      }
+    }
+
+    function speakTom(text) {
+      const msg = new SpeechSynthesisUtterance(text);
+      msg.pitch = 1;
+      msg.rate = 1;
+      msg.voice = speechSynthesis.getVoices().find(voice => voice.name.includes("Google UK English Male")) || null;
+      speechSynthesis.speak(msg);
+    }
+
+    // Load YouTube API
+    const tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    document.body.appendChild(tag);
+
+    // Confetti animation
+    function launchConfetti() {
+      const duration = 2 * 1000;
+      const end = Date.now() + duration;
+      const colors = ['#bb0000', '#ffffff', '#7209b7', '#3a0ca3'];
+
+      (function frame() {
+        confetti({
+          particleCount: 2,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 },
+          colors: colors
+        });
+        confetti({
+          particleCount: 2,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 },
+          colors: colors
+        });
+
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+      })();
+    }
+
+    // Confetti JS
+    const confettiScript = document.createElement('script');
+    confettiScript.src = "https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js";
+    document.body.appendChild(confettiScript);
+  </script>
+
+</body>
+</html>

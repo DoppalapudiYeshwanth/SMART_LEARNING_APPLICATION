@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>The Lion and the Mouse</title>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #3a0ca3, #7209b7, #4361ee);
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    iframe {
+      border-radius: 20px;
+      margin: 20px 0;
+    }
+
+    .question-box {
+      display: none;
+      margin: 20px auto;
+      max-width: 700px;
+      background: #1e1e2f;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    }
+
+    .question {
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+
+    .options button {
+      background-color: #7209b7;
+      border: none;
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 10px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .options button:hover {
+      background-color: #560bad;
+    }
+
+    .result {
+      font-size: 18px;
+      margin-top: 10px;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    .talking-tom {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      width: 180px;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>The Lion and the Mouse</h1>
+
+  <iframe id="ytplayer" width="100%" height="400"
+    src="https://www.youtube.com/embed/GxcGVCEEdcU?enablejsapi=1"
+    frameborder="0" allowfullscreen>
+  </iframe>
+
+  <div id="quiz1" class="question-box">
+    <div class="question">1. What was the lion doing when the mouse came running?</div>
+    <div class="options">
+      <button onclick="checkAnswer(this, false)">A) Hunting</button>
+      <button onclick="checkAnswer(this, true)">B) Sleeping</button>
+      <button onclick="checkAnswer(this, false)">C) Eating</button>
+      <button onclick="checkAnswer(this, false)">D) Roaring</button>
+    </div>
+    <div class="result" id="result1"></div>
+  </div>
+
+  <div id="quiz2" class="question-box">
+    <div class="question">2. How did the lion feel when the mouse woke him up?</div>
+    <div class="options">
+      <button onclick="checkAnswer(this, false)">A) Happy</button>
+      <button onclick="checkAnswer(this, false)">B) Sad</button>
+      <button onclick="checkAnswer(this, true)">C) Angry</button>
+      <button onclick="checkAnswer(this, false)">D) Scared</button>
+    </div>
+    <div class="result" id="result2"></div>
+  </div>
+
+  <img src="https://media.tenor.com/IiY_BdKztvYAAAAi/tom-talking-tom.gif" alt="Talking Tom" class="talking-tom">
+
+  <canvas id="confetti-canvas"></canvas>
+  <audio id="partySound" src="https://www.myinstants.com/media/sounds/tada-fanfare.mp3"></audio>
+
+  <script>
+    let player;
+
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('ytplayer', {
+        events: {
+          'onStateChange': onPlayerStateChange
+        }
+      });
+    }
+
+    function onPlayerStateChange(event) {
+      if (event.data === YT.PlayerState.ENDED) {
+        document.getElementById('quiz1').style.display = 'block';
+      }
+    }
+
+    let currentQuiz = 1;
+
+    function checkAnswer(button, correct) {
+      const resultId = "result" + currentQuiz;
+      const resultBox = document.getElementById(resultId);
+
+      if (correct) {
+        resultBox.innerHTML = "🎉 Correct! Great job!";
+        document.getElementById("partySound").play();
+        launchConfetti();
+        setTimeout(() => {
+          currentQuiz++;
+          if (currentQuiz <= 2) {
+            document.getElementById("quiz" + currentQuiz).style.display = 'block';
+          }
+        }, 1500);
+      } else {
+        resultBox.innerHTML = "❌ Oops! Try again or rewatch the story!";
+      }
+    }
+
+    const tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    document.body.appendChild(tag);
+
+    function launchConfetti() {
+      const duration = 2 * 1000;
+      const end = Date.now() + duration;
+      const colors = ['#bb0000', '#ffffff', '#7209b7', '#3a0ca3'];
+
+      (function frame() {
+        confetti({
+          particleCount: 2,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 },
+          colors: colors
+        });
+        confetti({
+          particleCount: 2,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 },
+          colors: colors
+        });
+
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+      })();
+    }
+
+    const confettiScript = document.createElement('script');
+    confettiScript.src = "https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js";
+    document.body.appendChild(confettiScript);
+  </script>
+
+</body>
+</html>

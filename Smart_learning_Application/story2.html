@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Elephant and Friends</title>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #3a0ca3, #7209b7, #4361ee);
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    iframe {
+      border-radius: 20px;
+      margin: 20px 0;
+    }
+
+    .question-box {
+      display: none;
+      margin: 20px auto;
+      max-width: 700px;
+      background: #1e1e2f;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    }
+
+    .question {
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+
+    .options button {
+      background-color: #7209b7;
+      border: none;
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 10px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .options button:hover {
+      background-color: #560bad;
+    }
+
+    .result {
+      font-size: 18px;
+      margin-top: 10px;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    #talkingTom {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      width: 180px;
+      display: none;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Elephant and Friends</h1>
+
+  <iframe id="ytplayer" width="100%" height="400" 
+    src="https://www.youtube.com/embed/ZClqVZiGzXk?enablejsapi=1"
+    frameborder="0" allowfullscreen>
+  </iframe>
+
+  <div id="quiz1" class="question-box">
+    <div class="question">1. What is the main moral of the story "The Elephant and the Friends"?</div>
+    <div class="options">
+      <button onclick="checkAnswer(this, false)">Always stay with your own kind</button>
+      <button onclick="checkAnswer(this, true)">Bravery and kindness can win true friendship</button>
+      <button onclick="checkAnswer(this, false)">Size determines strength and friendship</button>
+      <button onclick="checkAnswer(this, false)">It’s better to be alone than be rejected</button>
+    </div>
+    <div class="result" id="result1"></div>
+  </div>
+
+  <div id="quiz2" class="question-box">
+    <div class="question">2. Why did the other animals initially reject the elephant's friendship?</div>
+    <div class="options">
+      <button onclick="checkAnswer(this, false)">They were afraid of him</button>
+      <button onclick="checkAnswer(this, false)">They thought he was not useful</button>
+      <button onclick="checkAnswer(this, true)">They believed he was too big to play with them</button>
+      <button onclick="checkAnswer(this, false)">They already had enough friends</button>
+    </div>
+    <div class="result" id="result2"></div>
+  </div>
+
+  <canvas id="confetti-canvas"></canvas>
+  <audio id="partySound" src="https://www.myinstants.com/media/sounds/tada-fanfare.mp3"></audio>
+  <img id="talkingTom" src="https://media.tenor.com/x0KxnSH3sX8AAAAi/talking-tom.gif" alt="Talking Tom">
+
+  <script>
+    let player;
+    let currentQuiz = 1;
+
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('ytplayer', {
+        events: {
+          'onStateChange': onPlayerStateChange
+        }
+      });
+    }
+
+    function onPlayerStateChange(event) {
+      if (event.data === YT.PlayerState.ENDED) {
+        document.getElementById('quiz1').style.display = 'block';
+      }
+    }
+
+    function checkAnswer(button, correct) {
+      const resultId = "result" + currentQuiz;
+      const resultBox = document.getElementById(resultId);
+      const tom = document.getElementById("talkingTom");
+
+      if (correct) {
+        resultBox.innerHTML = "🎉 Correct! Great job!";
+        document.getElementById("partySound").play();
+        tom.style.display = 'block';
+        speakText("Wonderful! You got it right!");
+        launchConfetti();
+
+        setTimeout(() => {
+          tom.style.display = 'none';
+          currentQuiz++;
+          if (currentQuiz <= 2) {
+            document.getElementById("quiz" + currentQuiz).style.display = 'block';
+          }
+        }, 3000);
+      } else {
+        resultBox.innerHTML = "❌ Oops! Try again or rewatch the story!";
+      }
+    }
+
+    function speakText(text) {
+      const msg = new SpeechSynthesisUtterance(text);
+      msg.lang = 'en-US';
+      msg.pitch = 1.2;
+      msg.rate = 1;
+      window.speechSynthesis.speak(msg);
+    }
+
+    const tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    document.body.appendChild(tag);
+
+    const confettiScript = document.createElement('script');
+    confettiScript.src = "https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js";
+    document.body.appendChild(confettiScript);
+
+    function launchConfetti() {
+      const duration = 2 * 1000;
+      const end = Date.now() + duration;
+      const colors = ['#bb0000', '#ffffff', '#7209b7', '#3a0ca3'];
+
+      (function frame() {
+        confetti({
+          particleCount: 2,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 },
+          colors: colors
+        });
+        confetti({
+          particleCount: 2,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 },
+          colors: colors
+        });
+
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+      })();
+    }
+  </script>
+</body>
+</html>

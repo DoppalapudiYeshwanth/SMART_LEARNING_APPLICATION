@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Rock Paper Scissors - Hand Gesture</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom right, #121212, #292929);
+      color: #fff;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    h1 {
+      font-size: 32px;
+      color: #ffcc00;
+      margin: 30px 0 10px;
+      text-shadow: 1px 1px 3px #000;
+    }
+
+    .video-container {
+      margin: 20px 0;
+    }
+
+    video {
+      width: 90%;
+      max-width: 480px;
+      height: auto;
+      border-radius: 15px;
+      transform: scaleX(-1);
+      box-shadow: 0 0 12px rgba(255, 204, 0, 0.4);
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 15px;
+      padding: 20px;
+      width: 90%;
+      max-width: 480px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 16px rgba(255, 204, 0, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .result p {
+      margin: 10px 0;
+    }
+
+    span {
+      font-weight: bold;
+      color: #ffcc00;
+    }
+
+    footer {
+      margin-top: auto;
+      background: #1a1a1a;
+      width: 100%;
+      text-align: center;
+      padding: 15px;
+      font-size: 14px;
+      color: #ccc;
+      border-top: 1px solid #333;
+    }
+
+    footer a {
+      color: #ffcc00;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 24px;
+      }
+      .result {
+        font-size: 16px;
+        padding: 15px;
+      }
+    }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+</head>
+<body>
+  <h1>✊✋✌️ Rock Paper Scissors</h1>
+
+  <div class="video-container">
+    <video id="video" autoplay playsinline muted></video>
+  </div>
+
+  <div class="result">
+    <p>Your Move: <span id="userMove">Detecting...</span></p>
+    <p>Computer Move: <span id="computerMove">Waiting...</span></p>
+    <p>Result: <span id="gameResult">Let's Play!</span></p>
+  </div>
+
+  <footer>
+    &copy; 2025 Little Minds | Designed with ❤️ | <a href="home.html">Back to Home</a>
+  </footer>
+
+  <script>
+    const videoElement = document.getElementById('video');
+    const userMoveSpan = document.getElementById('userMove');
+    const computerMoveSpan = document.getElementById('computerMove');
+    const gameResultSpan = document.getElementById('gameResult');
+
+    function getGesture(landmarks) {
+      const fingerStates = [
+        landmarks[8].y < landmarks[6].y,   // index
+        landmarks[12].y < landmarks[10].y, // middle
+        landmarks[16].y < landmarks[14].y, // ring
+        landmarks[20].y < landmarks[18].y  // pinky
+      ];
+      const isScissors = fingerStates[0] && fingerStates[1] && !fingerStates[2] && !fingerStates[3];
+      const total = fingerStates.filter(Boolean).length;
+      if (total === 0) return "Rock";
+      else if (isScissors) return "Scissors";
+      else if (total >= 4) return "Paper";
+      return "Unknown";
+    }
+
+    function getComputerMove() {
+      const moves = ["Rock", "Paper", "Scissors"];
+      return moves[Math.floor(Math.random() * 3)];
+    }
+
+    function decideWinner(user, computer) {
+      if (user === computer) return "It's a Tie!";
+      if (
+        (user === "Rock" && computer === "Scissors") ||
+        (user === "Paper" && computer === "Rock") ||
+        (user === "Scissors" && computer === "Paper")
+      ) return "You Win!";
+      return "Computer Wins!";
+    }
+
+    const hands = new Hands({
+      locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`,
+    });
+    hands.setOptions({
+      maxNumHands: 1,
+      modelComplexity: 1,
+      minDetectionConfidence: 0.7,
+      minTrackingConfidence: 0.7,
+    });
+
+    hands.onResults((results) => {
+      if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+        const landmarks = results.multiHandLandmarks[0];
+        const userMove = getGesture(landmarks);
+        userMoveSpan.innerText = userMove;
+
+        const computerMove = getComputerMove();
+        computerMoveSpan.innerText = computerMove;
+
+        const result = decideWinner(userMove, computerMove);
+        gameResultSpan.innerText = result;
+      }
+    });
+
+    const camera = new Camera(videoElement, {
+      onFrame: async () => {
+        await hands.send({ image: videoElement });
+      },
+      width: 480,
+      height: 360,
+    });
+    camera.start();
+  </script>
+</body>
+</html>

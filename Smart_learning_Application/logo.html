@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome - PeppaPig</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: url('images/logo.png') no-repeat center center fixed;
+      background-size: 120% 120%; /* Increased background size */
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .btn {
+      margin-bottom: 40px;
+      padding: 16px 32px;
+      font-size: 24px;
+      background-color: #ff69b4;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #ff1493;
+    }
+  </style>
+</head>
+<body>
+  <button class="btn" onclick="location.href='login.html'">PeppaPig</button>
+</body>
+</html>
